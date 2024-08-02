@@ -5,12 +5,18 @@ import { fetchProjects } from '../features/projects/projectsSlice';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const projects = useSelector((state) => state.projects);
+  const { projects, status, error } = useSelector((state) => state.projects);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    dispatch(fetchProjects());
-  }, [dispatch]);
+    if (status === 'idle') {
+      dispatch(fetchProjects());
+    }
+  }, [status, dispatch]);
+
+  useEffect(() => {
+    console.log('Current state:', { projects, status, error });
+  }, [projects, status, error]);
 
   const filteredProjects = projects.filter((project) =>
     project.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -18,21 +24,34 @@ const Home = () => {
 
   return (
     <div className="home">
-      <input
-        type="text"
-        placeholder="Search projects"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-      <div className="projects">
-        {filteredProjects.map((project) => (
-          <div key={project.id} className="project-card">
-            <img src={`https://source.unsplash.com/random/200x200?sig=${project.id}`} alt={project.name} />
-            <h3>{project.name}</h3>
-            <Link to={`/project/${project.id}`}>View Details</Link>
-          </div>
-        ))}
+      <h1>PROJECTS</h1>
+      <div className="search-container">
+        <input
+          type="text"
+          placeholder="Search projects"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="search-input"
+        />
       </div>
+      {status === 'loading' && <p>Loading projects...</p>}
+      {status === 'failed' && (
+        <div>
+          <p>Error: {error}</p>
+          <p>Details: {JSON.stringify(error)}</p>
+        </div>
+      )}
+      {status === 'succeeded' && projects.length === 0 && <p>No projects found.</p>}
+      {status === 'succeeded' && projects.length > 0 && (
+        <div className="projects-grid">
+          {filteredProjects.map((project) => (
+            <Link to={`/project/${project.id}`} key={project.id} className="project-card">
+              <img src={`https://source.unsplash.com/random/300x200?sig=${project.id}`} alt={project.name} />
+              <h3>{project.name}</h3>
+            </Link>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

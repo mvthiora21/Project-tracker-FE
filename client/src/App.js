@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Home from './components/Home';
 import ProjectForm from './components/ProjectForm';
 import ProjectDetails from './components/ProjectDetails';
+import InviteForm from './components/InviteForm';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Home />} exact />
             <Route path="/add-project" element={<ProjectForm />} />
             <Route path="/project/:id" element={<ProjectDetails />} />
+            <Route path="/project/:id/invite" element={<InviteForm />} />
           </Routes>
         </div>
       </Router>

@@ -1,20 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_migrate import Migrate
+import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://username:password@localhost/project_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'postgresql://username:password@localhost/project_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 CORS(app)
 
 class Project(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    description = db.Column(db.String(500))
-    github_link = db.Column(db.String(200))
-    contributors = db.Column(db.String(200))
-    admin = db.Column(db.String(100))
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(500), nullable=False)
+    github_link = db.Column(db.String(200), nullable=False)
+    contributors = db.Column(db.String(200), nullable=False)
+    admin = db.Column(db.String(100), nullable=False)
 
     def to_dict(self):
         return {
@@ -49,6 +52,14 @@ def add_project():
 def get_project(id):
     project = Project.query.get_or_404(id)
     return jsonify(project.to_dict())
+
+@app.route('/projects/<int:id>/invite', methods=['POST'])
+def invite_contributor(id):
+    project = Project.query.get_or_404(id)
+    data = request.get_json()
+    # Here you would implement the logic to send an invitation
+    # For now, we'll just return a success message
+    return jsonify({'message': f"Invitation sent to {data['name']} ({data['email']}) for project {project.name}"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -18,10 +18,10 @@ const ProjectDetails = () => {
   return (
     <div className="project-details">
       <h2>{project.name}</h2>
-      <p>{project.description}</p>
-      <p><a href={project.github_link}>GitHub Link</a></p>
-      <p>Contributors: {project.contributors}</p>
-      <p>Admin: {project.admin}</p>
+      <p><strong>Description:</strong> {project.description}</p>
+      <p><strong>GitHub Link:</strong> <a href={project.github_link} target="_blank" rel="noopener noreferrer">{project.github_link}</a></p>
+      <p><strong>Contributors:</strong> {project.contributors}</p>
+      <p><strong>Admin:</strong> {project.admin}</p>
     </div>
   );
 };
