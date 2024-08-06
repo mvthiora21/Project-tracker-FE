@@ -11,7 +11,7 @@ const InviteForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://localhost:5000/projects/${id}/invite`, { name, email, github_username: githubUsername });
+      await axios.post(`https://project-tracker-be.vercel.app/projects/${id}/invite`, { name, email, github_username: githubUsername });
       alert('Invitation sent successfully!');
       setName('');
       setEmail('');

@@ -5,7 +5,8 @@ from flask_migrate import Migrate
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'postgresql://username:password@localhost/project_db'
+app.config['SQLALCHEMY_DATABASE_URI'] ="sqlite:///tracker.db"
+##app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL') or 'postgresql://username:password@localhost/project_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -57,8 +58,6 @@ def get_project(id):
 def invite_contributor(id):
     project = Project.query.get_or_404(id)
     data = request.get_json()
-    # Here you would implement the logic to send an invitation
-    # For now, we'll just return a success message
     return jsonify({'message': f"Invitation sent to {data['name']} ({data['email']}) for project {project.name}"}), 200
 
 if __name__ == '__main__':
